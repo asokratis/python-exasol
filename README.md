@@ -173,9 +173,9 @@ can be changed using the writeCallback parameter or the explicit version:
 C.writeCSV(CSVFILE, table = 'mytable')
 ```
 
-Using CSV as parameter does not drain a lot of memory like panda dataframes. If your memory within your node is limited and have many import jobs that you want to run concurrently, "C.writeCSV" can accomodate that need. 
-
-CSVFILE stores the content of a CSV file (regardless if its compressed or not). In our case, we store it compressed in gzip format. Take note that our CSV file uses its own custom delimiter character (`|`) exported with all of its fields with forced quotes. See how your CSV file is stored and amend properly by fitting the proper parameters.
+Using CSV as a parameter does not drain a lot of memory like panda dataframes. If your memory within your node is limited and have many imports that you want to run concurrently, "C.writeCSV" can accommodate that need. 
+ 
+CSVFILE stores the content of a CSV file (regardless if it is compressed or not). In our case, we store it compressed in gzip format. Take note that our CSV file uses its own custom delimiter character (`|`) exported with all of its fields with forced quotes. See how your CSV file is stored and amend properly by fitting the proper parameters.
 
 ```
 import csv
@@ -189,7 +189,7 @@ C.writeCSV(CSVFILE,table='mytable')
 
 This documentation provides how to [install PYODBC for EXASOL](README.md#prerequisites-and-installation) while using this repo for [additional functionality](README.md#description). For those unfamiliar with PYODBC, you can start reading the many ways you can use it by reading [pyodbc official documentation](https://github.com/mkleehammer/pyodbc/wiki/Getting-started). 
 
-Here we show a few examples to get started. In the code bellow we truncate tableA and delete some records on tableB:
+Here we show a few examples to get started. In the code below we truncate tableA and delete some records on tableB:
 ```
 cursor = C.cursor()
 cursor.execute("truncate table tableA")
