@@ -89,8 +89,15 @@ following arguments are possible:
 
 
 Assuming you have a DSN pointing to your database instance you can connect like this:
+ 
 ```
 C = E.connect(dsn='YourDSN')
+```
+
+If you are new to ODBC, unless you want to manually commit every time after you edit a table in the database by running `C.commit()`, set the parameter autocommit to True for your connection: 
+
+```
+C = E.connect(dsn='YourDSN',autocommit=True)
 ```
 
 Alternatively if you don't have a DSN you can also specify the required information in the connection string:
@@ -102,8 +109,6 @@ C = E.connect(Driver = 'libexaodbc-uo2214.so',
 ```
 
 The resulting object supports `with` statement, so the `C.close` function is called automatically on leaving the scope.
-
-
 
 ### Executing queries
 
@@ -155,13 +160,41 @@ C.writeData(R, table = 'mytable')
 print(R)
 ```
 
+If you did not set by default to autocommit within your connection, you have to manually commit your changes in order for them to be in effect within your database:
+
+```
+C.commit()
+```
+
 The data will be simply appended to the given table.
 Similar to readData, the default format is a pandas data frame, which
 can be changed using the writeCallback parameter or the explicit version:
 ```
-C.writeCSV(R, table = 'mytable')
+C.writeCSV(CSVFILE, table = 'mytable')
 ```
 
+Using CSV as parameter does not drain a lot of memory like panda dataframes. If your memory within your node is limited and have many import jobs that you want to run concurrently, "C.writeCSV" can accomodate that need. 
+
+CSVFILE stores the content of a CSV file (regardless if its compressed or not). In our case, we store it compressed in gzip format. Take note that our CSV file uses its own custom delimiter character (`|`) exported with all of its fields with forced quotes. See how your CSV file is stored and amend properly by fitting the proper parameters.
+
+```
+import csv
+import gzip
+f = gzip.open('mydirectory')
+CSVFILE = csv.reader(f, delimiter='|',quoting=csv.QUOTE_ALL)
+C.writeCSV(CSVFILE,table='mytable')
+```
+
+### Getting Started With PYODBC
+
+This documentation provides how to [install PYODBC for EXASOL](README.md#prerequisites-and-installation) while using this repo for [additional functionality](README.md#description). For those unfamiliar with PYODBC, you can start reading the many ways you can use it by reading [pyodbc official documentation](https://github.com/mkleehammer/pyodbc/wiki/Getting-started). 
+
+Here we show a few examples to get started. In the code bellow we truncate tableA and delete some records on tableB:
+```
+cursor = C.cursor()
+cursor.execute("truncate table tableA")
+cursor.execute("delete from tableB where ID < 1000")
+```
 
 ### Using User Defined Functions
 
